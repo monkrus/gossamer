@@ -292,22 +292,18 @@ func TestValidateTransaction_StorageChange(t *testing.T) {
 }
 
 func TestValidateTransaction_Transfer(t *testing.T) {
-	rt := NewTestRuntime(t, SUBSTRATE_TEST_RUNTIME)
+	rt := NewTestRuntime(t, NODE_RUNTIME)
 
-	alice := kr.Alice.Public().Encode()
-	bob := kr.Bob.Public().Encode()
+	alice := kr.Alice.Public().(*sr25519.PublicKey).AsBytes()
+	bob := kr.Bob.Public().(*sr25519.PublicKey).AsBytes()
 
-	aliceb := [32]byte{}
-	copy(aliceb[:], alice)
+	// transfer := extrinsic.NewTransfer(alice, bob, 1000, 1)
+	// ext, err := transfer.AsSignedExtrinsic(kr.Alice.Private().(*sr25519.PrivateKey))
+	// require.NoError(t, err)
+	// tx, err := ext.Encode()
+	// require.NoError(t, err)
 
-	bobb := [32]byte{}
-	copy(bobb[:], bob)
-
-	transfer := extrinsic.NewTransfer(aliceb, bobb, 1000, 1)
-	ext, err := transfer.AsSignedExtrinsic(kr.Alice.Private().(*sr25519.PrivateKey))
-	require.NoError(t, err)
-	tx, err := ext.Encode()
-	require.NoError(t, err)
+	tx, _ := common.HexToBytes("0x290284ff78b6dd81f9f55c08fdedb28e5e78e44a1ce6568164d4bd43fa4630a7a3885927014c00393ff01ed7ceeedf8f873fb20a4ba95c301a8676313ce2b089538f93d14e23f2a0ff94590782f27114e97c6521f5b6377489dd4ddff95ced1cdf0d25878e0000000600ff8eaf04151687736326c9fea17e25fc5287613693c912909cb226aa4794f26a4804")
 
 	validity, err := rt.ValidateTransaction(tx)
 	require.NoError(t, err)
