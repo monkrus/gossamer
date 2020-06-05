@@ -331,6 +331,32 @@ var timstap0 = []byte{4, 3, 0, 3, 98, 214, 215, 94}
 
 var timstap0_test = []byte{4, 3, 0, 1, 0xff, 0xff}
 
+var system_remark = []byte{4, 0, 1, 4, 0xff}
+
+func TestValidateTransaction_SystemRemark(t *testing.T) {
+	rt := NewTestRuntime(t, NODE_RUNTIME)
+
+	// ext := extrinsic.NewStorageChangeExt([]byte("testkey"), optional.NewBytes(true, []byte("testvalue")))
+	// enc, err := ext.Encode()
+	// require.NoError(t, err)
+
+	enc, err := scale.Encode(system_remark)
+	require.NoError(t, err)
+
+	validity, err := rt.ValidateTransaction(enc)
+	require.NoError(t, err)
+
+	expected := &transaction.Validity{
+		Priority:  0x1,
+		Requires:  [][]byte{},
+		Provides:  [][]byte{},
+		Longevity: 1,
+		Propagate: false,
+	}
+
+	require.Equal(t, expected, validity)
+}
+
 func TestApplyExtrinsic_Timestamp(t *testing.T) {
 	// TODO: update AuthoritiesChange to need to be signed by an authority
 	rt := NewTestRuntime(t, NODE_RUNTIME)
@@ -353,7 +379,7 @@ func TestApplyExtrinsic_Timestamp(t *testing.T) {
 	err := rt.InitializeBlock(header)
 	require.NoError(t, err)
 
-	enc, err := scale.Encode(timstap0_test)
+	enc, err := scale.Encode(system_remark)
 	require.NoError(t, err)
 
 	res, err := rt.ApplyExtrinsic(enc)
