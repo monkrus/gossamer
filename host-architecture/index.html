@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Host Architecture | Gossamer Docs</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Host Architecture" />
+<meta name="author" content="ChainSafe" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The Official Documentation for Gossamer A Go Implementation of the Polkadot Host" />
+<meta property="og:description" content="The Official Documentation for Gossamer A Go Implementation of the Polkadot Host" />
+<meta property="og:site_name" content="Gossamer Docs" />
+<script type="application/ld+json">
+{"headline":"Host Architecture","@type":"WebPage","author":{"@type":"Person","name":"ChainSafe"},"description":"The Official Documentation for Gossamer A Go Implementation of the Polkadot Host","url":"/host-architecture/","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="shortcut icon" href="/assets/favicon.ico" /><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Gossamer Docs" />
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Gossamer Docs</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/run-nodes/">Run Nodes</a><a class="page-link" href="/build-nodes/">Build Nodes</a><a class="page-link" href="/implementation/">Implementation</a><a class="page-link" href="/resources/">Resources</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <ul>
+  <li><em>TODO: update “Host Architecture” document <a href="https://github.com/ChainSafe/gossamer/issues/918">#918</a></em></li>
+</ul>
+
+<hr />
+
+<h2 id="nodes">Nodes</h2>
+
+<p>Gossamer includes a base node implementation called the <strong>host node</strong> that implements a shared base protocol for all blockchain protocols within the Polkadot ecosystem. The <strong>host node</strong> is used as the foundation for all <strong>official nodes</strong> within Gossamer and all <strong>custom nodes</strong> built with Gossamer.</p>
+
+<h3 id="host-node">Host Node</h3>
+
+<p>The <strong>host node</strong> is the base node implementation. As the base node implementation, the <strong>host node</strong> is not complete without a configuration file, genesis file, compiled runtime, and runtime imports.</p>
+
+<h3 id="official-nodes">Official Nodes</h3>
+
+<p>The <strong>gssmr node</strong> is an official node implementation for the Gossamer Testnet - a configuration file, genesis file, compiled runtime, and runtime imports used with the <strong>host node</strong>.</p>
+
+<p>The <strong>ksmcc node</strong> is an official node implementation for the Kusama Network - a configuration file, genesis file, compiled runtime, and runtime imports used with the <strong>host node</strong>.</p>
+
+<p>The <strong>dotcc node</strong> is an official node implementation for the Polkadot Network - a configuration file, genesis file, compiled runtime, and runtime imports used with the <strong>host node</strong>.</p>
+
+<h3 id="custom-services">Custom Services</h3>
+
+<p>See <a href="../custom-services/">Custom Services</a> for more information about building custom node implementations.</p>
+
+<h2 id="node-services">Node Services</h2>
+
+<p>The <strong>node services</strong> are the main components of the <strong>host node</strong>:</p>
+
+<ul>
+  <li><strong><a href="#core-service">Core Service</a></strong></li>
+  <li><strong><a href="#network-service">Network Service</a></strong></li>
+  <li><strong><a href="#rpc-service">RPC Service</a></strong></li>
+  <li><strong><a href="#state-service">State Service</a></strong></li>
+</ul>
+
+<p>Each <strong>node service</strong> adheres to a common interface:</p>
+
+<pre><code class="language-go=">type Service interface {
+	Start() error
+	Stop() error
+}
+</code></pre>
+
+<ul>
+  <li>All goroutines within <strong>node services</strong> should start inside <code class="language-plaintext highlighter-rouge">Start</code></li>
+  <li>All <strong>node services</strong>  can be terminated without consequences by calling <code class="language-plaintext highlighter-rouge">Stop</code></li>
+  <li>All <strong>node services</strong> whose <code class="language-plaintext highlighter-rouge">Start</code> method has not been called can be discarded without consequences</li>
+</ul>
+
+<h3 id="core-service">Core Service</h3>
+
+<p>The <strong>core service</strong> is responsible for block production and finalization (consensus) and processing messages received from the <strong>network service</strong>; it initializes BABE sessions and GRANDPA rounds and validates blocks and transactions before committing them to the <strong>state service</strong>.</p>
+
+<ul>
+  <li>only the <strong>core service</strong> writes to block state</li>
+  <li>only the <strong>core service</strong> writes to storage state</li>
+</ul>
+
+<h3 id="network-service">Network Service</h3>
+
+<p>The <strong>network service</strong> is responsible for coordinating network host and peer interactions. It manages peer connections, receives and parses messages from connected peers and handles each message based on its type. If the message is a non-status message and we have confirmed the status of the connected peer, the message is sent to the <strong>core service</strong> to be processed.</p>
+
+<ul>
+  <li>the <strong>network service</strong> only reads from block state</li>
+  <li>only the <strong>network service</strong> writes to network state</li>
+</ul>
+
+<h4 id="host-submodule">Host Submodule</h4>
+
+<p>The <strong>host submodule</strong> is a wrapper for the libp2p host. This is used to abstract away the details of libp2p and to provide a simple reusable interface for the network host.</p>
+
+<pre><code class="language-go=">type host struct {
+	ctx        context.Context
+	h          libp2phost.Host
+	dht        *kaddht.IpfsDHT
+	bootnodes  []peer.AddrInfo
+	protocolID protocol.ID
+}
+</code></pre>
+
+<h4 id="status-submodule">Status Submodule</h4>
+
+<p>The <strong>status submodule</strong> implements the protocol for the status message exchange.</p>
+
+<pre><code class="language-go=">type status struct {
+	host          *host
+	hostMessage   *StatusMessage
+	peerConfirmed *sync.Map // map of peer.ID to time.Time
+	peerMessage   *sync.Map // map of peer.ID to *StatusMessage
+}
+</code></pre>
+
+<h4 id="gossip-submodule">Gossip Submodule</h4>
+
+<p>The <strong>gossip submodule</strong> stores information about past messages to effectively determine which messages to propagate and which to ignore.</p>
+
+<pre><code class="language-go=">type gossip struct {
+	host    *host
+	hasSeen *sync.Map
+}
+</code></pre>
+
+<h4 id="syncer-submodule">Syncer Submodule</h4>
+
+<p>The <strong>syncer submodule</strong> tracks requested blocks and coordinates syncing with the <strong>core service</strong>.</p>
+
+<pre><code class="language-go=">type syncer struct {
+	host              *host
+	blockState        BlockState
+	requestedBlockIDs *sync.Map       // track requested block id messages
+	syncChan          chan&lt;- *big.Int // chain synchronization channel
+}
+</code></pre>
+
+<h3 id="rpc-service">RPC Service</h3>
+
+<p>The <strong>rpc service</strong> is an implementation of the RPC server.</p>
+
+<ul>
+  <li>the <strong>rpc service</strong> only reads from block state</li>
+  <li>the <strong>rpc service</strong> only reads from storage state</li>
+  <li>the <strong>rpc service</strong> only reads from network state</li>
+</ul>
+
+<h3 id="state-service">State Service</h3>
+
+<p>The <strong>state service</strong> is the source of truth for all chain and node state.</p>
+
+<ul>
+  <li>only the <strong>core service</strong> writes to block state</li>
+  <li>only the <strong>core service</strong> writes to storage state</li>
+  <li>only the <strong>network service</strong> writes to network state</li>
+</ul>
+
+<h2 id="node-channels">Node Channels</h2>
+
+<h3 id="block-channels">Block Channels</h3>
+
+<p><em>work in progress</em></p>
+
+<h3 id="message-channels">Message Channels</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">coreMsgs</code> - messages from the core service</li>
+  <li><code class="language-plaintext highlighter-rouge">networkMsgs</code> - messages from the network service</li>
+</ul>
+
+<p>within the core service:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">msgSend</code> - send messages to the network service</li>
+  <li><code class="language-plaintext highlighter-rouge">msgRec</code> - receive messages from the network service</li>
+</ul>
+
+<p>within the network service:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">msgSend</code> - send messages to the core service</li>
+  <li><code class="language-plaintext highlighter-rouge">msgRec</code> - receive messages from the core service</li>
+</ul>
+
+<h3 id="syncer-channels">Syncer Channels</h3>
+
+<p><em>work in progress</em></p>
+
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/"></data>
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col">
+                <p style="text-align: center">The Official Documentation for Gossamer | A Go Implementation of the Polkadot Host
+</p>
+            </div>
+        </div>
+        <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/ChainSafe" title="ChainSafe"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/ChainSafeth" title="ChainSafeth"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+    </div>
+</footer>
+</body>
+
+</html>

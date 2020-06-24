@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Package Library | Gossamer Docs</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Package Library" />
+<meta name="author" content="ChainSafe" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The Official Documentation for Gossamer A Go Implementation of the Polkadot Host" />
+<meta property="og:description" content="The Official Documentation for Gossamer A Go Implementation of the Polkadot Host" />
+<meta property="og:site_name" content="Gossamer Docs" />
+<script type="application/ld+json">
+{"headline":"Package Library","@type":"WebPage","author":{"@type":"Person","name":"ChainSafe"},"description":"The Official Documentation for Gossamer A Go Implementation of the Polkadot Host","url":"/package-library/","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="shortcut icon" href="/assets/favicon.ico" /><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Gossamer Docs" />
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Gossamer Docs</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/run-nodes/">Run Nodes</a><a class="page-link" href="/build-nodes/">Build Nodes</a><a class="page-link" href="/implementation/">Implementation</a><a class="page-link" href="/resources/">Resources</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <h2 id="overview">Overview</h2>
+
+<p>Gossamer is a <strong><em>modular blockchain framework</em></strong>; it was designed with a package structure that makes it possible to reuse Gossamer packages to build and run custom nodes and node services.</p>
+
+<p>This document provides an overview of the packages that make up the Gossamer framework - more detailed information about each package can be found at <a href="https://pkg.go.dev/github.com/ChainSafe/gossamer">pkg.go.dev/ChainSafe/gossamer</a>.</p>
+
+<p>Gossamer packages can be categorized into <strong>four package types</strong>:</p>
+
+<ul>
+  <li>
+    <p><strong><a href="#cmd-packages">cmd packages</a></strong></p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">cmd/...</code> - <em>command packages for running nodes and other services</em></li>
+    </ul>
+  </li>
+  <li>
+    <p><strong><a href="#host-packages">host packages</a></strong></p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">host/...</code> - <em>the host node package and host node service packages</em></li>
+    </ul>
+  </li>
+  <li>
+    <p><strong><a href="#lib-packages">lib packages</a></strong></p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">lib/...</code> - <em>modular packages for building nodes and other services</em></li>
+    </ul>
+  </li>
+  <li>
+    <p><strong><a href="#test-packages">test packages</a></strong></p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">tests/...</code> - <em>test packages for test framework (ie, integration tests)</em></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="cmd-packages">cmd packages</h2>
+
+<h4 id="cmdgossaamer"><code class="language-plaintext highlighter-rouge">cmd/gossaamer</code></h4>
+
+<ul>
+  <li>The <strong>gossamer package</strong> is used to run nodes built with Gossamer.</li>
+</ul>
+
+<h2 id="host-packages">host packages</h2>
+
+<h4 id="host"><code class="language-plaintext highlighter-rouge">host</code></h4>
+
+<ul>
+  <li>The <strong>host package</strong> implements the shared base protocol for all node implementations operating within the Polkadot ecosystem. The <strong>host package</strong> implements the <a href="../host-architecture#host-node">Host Node</a>; it is the base node implementation for all <a href="../host-architecture#official-nodes">Official Nodes</a> and <a href="../host-architecture#custom-services">Custom Services</a> built with Gossamer.</li>
+</ul>
+
+<h4 id="hostcore"><code class="language-plaintext highlighter-rouge">host/core</code></h4>
+
+<ul>
+  <li>The <strong>core package</strong> implements the <a href="../host-architecture#core-service">Core Service</a> -  responsible for block production and block finalization (consensus) and processing messages received from the <a href="../host-architecture#network-service">Network Service</a>.</li>
+</ul>
+
+<h4 id="hostnetwork"><code class="language-plaintext highlighter-rouge">host/network</code></h4>
+
+<ul>
+  <li>The <strong>network package</strong> implements the <a href="../host-architecture#network-service">Network Service</a> - responsible for coordinating network host and peer interactions. It manages peer connections, receives and parses messages from connected peers and handles each message based on its type.</li>
+</ul>
+
+<h4 id="hoststate"><code class="language-plaintext highlighter-rouge">host/state</code></h4>
+
+<ul>
+  <li>The <strong>state package</strong> implements the <a href="../host-architecture#state-service">State Service</a> - the source of truth for all chain and node state that is made accessible to all node services.</li>
+</ul>
+
+<h4 id="hostrpc"><code class="language-plaintext highlighter-rouge">host/rpc</code></h4>
+
+<ul>
+  <li>The <strong>rpc package</strong> implements the <a href="../host-architecture#rpc-service">RPC Service</a> - an HTTP server that handles state interactions.</li>
+</ul>
+
+<h4 id="hosttypes"><code class="language-plaintext highlighter-rouge">host/types</code></h4>
+
+<ul>
+  <li>The <strong>types package</strong> implements types defined within the Polkadot Host specification.</li>
+</ul>
+
+<h2 id="lib-packages">lib packages</h2>
+
+<h4 id="libbabe"><code class="language-plaintext highlighter-rouge">lib/babe</code></h4>
+
+<ul>
+  <li>the <strong>babe package</strong> implements BABE</li>
+</ul>
+
+<h4 id="libblocktree"><code class="language-plaintext highlighter-rouge">lib/blocktree</code></h4>
+
+<ul>
+  <li>the <strong>blocktree package</strong> implements blocktree</li>
+</ul>
+
+<h4 id="libcommon"><code class="language-plaintext highlighter-rouge">lib/common</code></h4>
+
+<ul>
+  <li>the <strong>common package</strong> defines common types and functions</li>
+</ul>
+
+<h4 id="libcrypto"><code class="language-plaintext highlighter-rouge">lib/crypto</code></h4>
+
+<ul>
+  <li>the <strong>crypto package</strong> implements crypto keypairs</li>
+</ul>
+
+<h4 id="libdatabase"><code class="language-plaintext highlighter-rouge">lib/database</code></h4>
+
+<ul>
+  <li>the <strong>database package</strong> is a generic database built with badgerDB</li>
+</ul>
+
+<h4 id="libgrandpa"><code class="language-plaintext highlighter-rouge">lib/grandpa</code></h4>
+
+<ul>
+  <li>the <strong>grandpa package</strong> implements GRANDPA</li>
+</ul>
+
+<h4 id="libkeystore"><code class="language-plaintext highlighter-rouge">lib/keystore</code></h4>
+
+<ul>
+  <li>the <strong>keystore package</strong> manages the keystore and includes test keyrings</li>
+</ul>
+
+<h4 id="libruntime"><code class="language-plaintext highlighter-rouge">lib/runtime</code></h4>
+
+<ul>
+  <li>the <strong>runtime package</strong> implements the WASM runtime using Wasmer</li>
+</ul>
+
+<h4 id="libscale"><code class="language-plaintext highlighter-rouge">lib/scale</code></h4>
+
+<ul>
+  <li>the <strong>scale package</strong> implements the SCALE codec</li>
+</ul>
+
+<h4 id="libservices"><code class="language-plaintext highlighter-rouge">lib/services</code></h4>
+
+<ul>
+  <li>the <strong>services package</strong> implements a common interface for node services</li>
+</ul>
+
+<h4 id="libtransaction"><code class="language-plaintext highlighter-rouge">lib/transaction</code></h4>
+
+<ul>
+  <li>the <strong>transaction package</strong> is used to manage transaction queues</li>
+</ul>
+
+<h4 id="libtrie"><code class="language-plaintext highlighter-rouge">lib/trie</code></h4>
+
+<ul>
+  <li>the <strong>trie package</strong> implements a modified merkle-patricia trie</li>
+</ul>
+
+<h4 id="libutils"><code class="language-plaintext highlighter-rouge">lib/utils</code></h4>
+
+<ul>
+  <li>the <strong>utils package</strong> is used to manage node and test directories</li>
+</ul>
+
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/"></data>
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col">
+                <p style="text-align: center">The Official Documentation for Gossamer | A Go Implementation of the Polkadot Host
+</p>
+            </div>
+        </div>
+        <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/ChainSafe" title="ChainSafe"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/ChainSafeth" title="ChainSafeth"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+    </div>
+</footer>
+</body>
+
+</html>
